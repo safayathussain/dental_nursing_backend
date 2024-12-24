@@ -4,15 +4,18 @@
 
 To get started with this backend, follow these steps:
 
-1. Click "Use this Template" then make your own Application Name.
+1. Clone this repository
+   ```
+   git clone https://github.com/safayathussain/dental_nursing_backend.git
+   ```
 
-2. Install dependencies:
+3. Install dependencies:
 
     ```
     npm install
     ```
 
-3. Set up your environment variables:
+4. Set up your environment variables:
 
     ```
     MONGODB_URI=mongodb+srv://safayat:5F7qorwo6wwii0Hg@cluster0.0fhv1b8.mongodb.net/
@@ -36,7 +39,7 @@ To get started with this backend, follow these steps:
 
     Update `.env` file with your configuration details.
 
-4. Run the application:
+5. Run the application:
 
     ```
     npm start
