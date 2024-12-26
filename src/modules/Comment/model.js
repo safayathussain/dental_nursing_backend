@@ -38,7 +38,7 @@ const commentSchema = new mongoose.Schema(
     },
     postType: {
       type: String,
-      enum: ["Blog", "Question"],
+      enum: ["Blog", "Question", "Poll"],
       required: true,
     },
     childrensCount: {

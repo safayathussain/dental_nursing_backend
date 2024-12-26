@@ -46,12 +46,55 @@ const getRepliesOfComment = async (rootCommentId) => {
     });
     return tree;
   }
-  const allComments = await Comment.find({ rootCommentId }).populate("userId", "name profilePicture").lean();
+  const allComments = await Comment.find({ rootCommentId })
+    .populate("userId", "name profilePicture")
+    .lean();
   const tree = buildCommentTree(allComments, rootCommentId);
   return { data: tree };
 };
-
+const likeComment = async (req, id) => {
+  const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
+  if (!isValidObjectId) {
+    return { statusCode: 404, message: "Comment Not found", success: false };
+  }
+  const comment = await Comment.findByIdAndUpdate(id, {
+    $addToSet: { likedUser: req._id },
+  });
+  if (!comment) {
+    return {
+      statusCode: 404,
+      message: "Comment Not found",
+      success: false,
+    };
+  }
+  return {
+    data: comment,
+    message: "Comment liked successfully",
+  };
+};
+const dislikeComment = async (req, id) => {
+  const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
+  if (!isValidObjectId) {
+    return { statusCode: 404, message: "Comment Not found", success: false };
+  }
+  const comment = await Comment.findByIdAndUpdate(id, {
+    $pull: { likedUser: req._id },
+  });
+  if (!comment) {
+    return {
+      statusCode: 404,
+      message: "Comment Not found",
+      success: false,
+    };
+  }
+  return {
+    data: comment,
+    message: "Comment disliked successfully",
+  };
+};
 module.exports = {
   createComment,
   getRepliesOfComment,
+  likeComment,
+  dislikeComment,
 };
