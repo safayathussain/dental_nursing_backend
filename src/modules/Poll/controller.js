@@ -7,7 +7,7 @@ const { asyncHandler } = require("../../utility/common");
 const authMiddleware = require("../../middlewares/authMiddleware");
 const roleMiddleware = require("../../middlewares/roleMiddleware");
 const PollModel = require("./model");
-
+const UserModel = require("../User/model");
 // Create a poll
 const createPollHandler = asyncHandler(async (req, res) => {
   const { content, options, userId } = req.body;
@@ -76,8 +76,15 @@ const deletePollHandler = asyncHandler(async (req, res) => {
 
 // Vote in a poll
 const voteHandler = asyncHandler(async (req, res) => {
-  const { pollId, optionId } = req.body;
-
+  const { pollId, optionId, userId } = req.body;
+  const user = await UserModel.findById(userId);
+  if (!user)
+    return sendResponse({
+      message: "User not found",
+      res,
+      statusCode: 400,
+      success: false,
+    });
   if (!pollId || !optionId)
     return sendResponse({
       message: "Poll ID and option id are required",
@@ -88,7 +95,8 @@ const voteHandler = asyncHandler(async (req, res) => {
 
   const { data, message, statusCode, success } = await pollService.voteInPoll(
     pollId,
-    optionId
+    optionId,
+    userId
   );
 
   sendResponse({ res, data, message, statusCode, success });
@@ -100,6 +108,28 @@ const getLatestPoll = asyncHandler(async (req, res) => {
     statusCode: 200,
     message: "Latest poll retrieved successfully",
     data: latestPoll,
+    success: true,
+  });
+});
+const getPollById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const poll = await PollModel.findById(id);
+  sendResponse({
+    res,
+    statusCode: 200,
+    message: "Poll retrieved successfully",
+    data: poll,
+    success: true,
+  });
+});
+const getPollResponseByUserId = asyncHandler(async (req, res) => {
+  const { pollId, userId } = req.params;
+  const poll = await PollModel.PollResponse.findOne({ pollId, userId });
+  sendResponse({
+    res,
+    statusCode: 200,
+    message: "Poll response retrieved successfully",
+    data: poll,
     success: true,
   });
 });
@@ -121,5 +151,7 @@ router.get("/all-polls", getAllPollsHandler);
 router.delete("/delete-poll/:id", deletePollHandler);
 router.post("/vote", voteHandler);
 router.get("/latest-poll", getLatestPoll);
+router.get("/poll-response/:pollId/:userId", getPollResponseByUserId);
 
+router.get("/:id/", getPollById);
 module.exports = router;

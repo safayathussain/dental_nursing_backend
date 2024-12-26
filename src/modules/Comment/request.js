@@ -35,7 +35,7 @@ const createCommentSchema = Joi.object({
     "objectId.base": "User ID must be a valid ObjectId",
   }),
 
-  postType: Joi.string().valid("Blog", "Question").required().messages({
+  postType: Joi.string().valid("Blog", "Question", "Poll").required().messages({
     "any.required": "Post type is required",
     "string.base": "Post type must be a string",
     "any.only": 'Post type must be either "Blog" or "Question"',

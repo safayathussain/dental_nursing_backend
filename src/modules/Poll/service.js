@@ -25,7 +25,7 @@ const createPoll = async ({ content, options, userId }) => {
 const updatePoll = async (id, { content, options }) => {
   try {
     if (!id) {
-      throw new Error('Poll ID is required');
+      throw new Error("Poll ID is required");
     }
     const poll = await PollModel.findById(id);
     if (!poll) {
@@ -36,33 +36,33 @@ const updatePoll = async (id, { content, options }) => {
       };
     }
     const updateData = {};
-    let newOptions = []; 
+    let newOptions = [];
     if (content && content !== poll.content) {
       updateData.content = content;
     }
     if (options?.length > 0) {
-      const existingOptionIds = poll.options.map(opt => opt._id.toString());
+      const existingOptionIds = poll.options.map((opt) => opt._id.toString());
       const existingOptions = [];
-      options.forEach(option => {
+      options.forEach((option) => {
         if (option._id && existingOptionIds.includes(option._id.toString())) {
           existingOptions.push(option);
         } else {
           newOptions.push({
             value: option.value,
-            voteCount: 0   
+            voteCount: 0,
           });
         }
       });
-      const updatedExistingOptions = poll.options.map(existingOption => {
-        const updatedOption = existingOptions.find(opt => 
-          opt._id.toString() === existingOption._id.toString()
+      const updatedExistingOptions = poll.options.map((existingOption) => {
+        const updatedOption = existingOptions.find(
+          (opt) => opt._id.toString() === existingOption._id.toString()
         );
 
         if (updatedOption) {
           return {
             ...existingOption.toObject(),
             value: updatedOption.value || existingOption.value,
-            voteCount: existingOption.voteCount
+            voteCount: existingOption.voteCount,
           };
         }
         return existingOption;
@@ -82,11 +82,11 @@ const updatePoll = async (id, { content, options }) => {
 
     // Update the poll in the database
     const updatedPoll = await PollModel.findOneAndUpdate(
-      { _id: id }, 
+      { _id: id },
       updateData,
       {
         new: true,
-        runValidators: true
+        runValidators: true,
       }
     );
 
@@ -95,7 +95,6 @@ const updatePoll = async (id, { content, options }) => {
       message: `Poll updated successfully`,
       success: true,
     };
-
   } catch (error) {
     return {
       statusCode: 500,
@@ -121,13 +120,20 @@ const deletePoll = async (id) => {
   };
 };
 
-const voteInPoll = async (pollId, optionId) => {
+const voteInPoll = async (pollId, optionId, userId) => {
   // Find the poll by ID
   const poll = await PollModel.findById(pollId);
   if (!poll) {
     return {
       statusCode: 404,
       message: "Poll not found",
+      success: false,
+    };
+  }
+  if (poll.votedUser.includes(userId)) {
+    return {
+      statusCode: 403,
+      message: "You have already voted in this poll",
       success: false,
     };
   }
@@ -139,7 +145,13 @@ const voteInPoll = async (pollId, optionId) => {
       success: false,
     };
   }
+  const newPollResponse = await PollModel.PollResponse.create({
+    pollId,
+    userId,
+    optionId,
+  });
   option.voteCount += 1;
+  poll.votedUser.push(userId);
   poll.votedCount += 1;
   await poll.save();
   return {
