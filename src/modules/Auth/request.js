@@ -7,7 +7,7 @@ const createUserSchema = Joi.object().keys({
     'any.required': 'Name is required', 
     'string.base': 'Name must be a string'
   }),
-  profilePicture: Joi.string().optional().messages({
+  profilePicture: Joi.string().optional().allow(null).messages({
     'string.base': 'profilePicture must be a string'
   }),
   email: Joi.string().email().required().messages({
