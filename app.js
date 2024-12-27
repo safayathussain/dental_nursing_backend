@@ -41,6 +41,8 @@ const whitelist = [
   "http://localhost:3001",
   "http://localhost:3004",
   "http://localhost:3005",
+  process.env.FRONTEND_URL,
+  process.env.FRONTEND_URL_ADMIN
 ];
 
 const corsOptions = {
