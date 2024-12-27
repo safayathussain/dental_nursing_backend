@@ -28,7 +28,9 @@ const UserRegister = async (
           payload: {
             email: existedUser.email,
             _id: existedUser._id,
+            name: existedUser.name,
             role: existedUser.role,
+            profilePicture: existedUser.profilePicture
           },
         });
         return { data: { ...existedUser, accessToken } };
@@ -57,8 +59,10 @@ const UserRegister = async (
         res,
         payload: {
           email: user.email,
+          name: user.name,
           _id: user._id,
           role: user.role,
+          profilePicture: user.profilePicture
         },
       });
       return {
@@ -73,7 +77,7 @@ const UserRegister = async (
 };
 const VerifyOtp = async (email, otp, res) => {
   try {
-    const user = await UserModel.findOne({ email }).select('+otp');
+    const user = await UserModel.findOne({ email }).select("+otp");
     if (user.otp === otp) {
       const updatedUser = await UserModel.findByIdAndUpdate(
         user._id,
@@ -85,7 +89,10 @@ const VerifyOtp = async (email, otp, res) => {
         payload: {
           email: updatedUser.email,
           _id: updatedUser._id,
+          name: updatedUser.name,
           role: updatedUser.role,
+          profilePicture: updatedUser.profilePicture
+
         },
       });
       return {
@@ -135,7 +142,9 @@ const setPassword = async (email, password, res) => {
       payload: {
         email: mongoUser.email,
         _id: mongoUser._id,
+        name: mongoUser.name,
         role: mongoUser.role,
+        profilePicture: mongoUser.profilePicture
       },
     });
     return { data: { ...mongoUser, accessToken }, message: "Password updated" };
@@ -150,10 +159,17 @@ const setPassword = async (email, password, res) => {
 const refreshToken = async (refreshToken) => {
   try {
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    const user = await UserModel.findById(decoded._id)
     const newAccessToken = jwt.sign(
-      { email: decoded.email, _id: decoded._id, role: decoded.role },
+      {
+        email: decoded.email,
+        _id: decoded._id,
+        role: decoded.role,
+        name: user.name,
+        profilePicture: user.profilePicture
+      },
       process.env.JWT_SECRET,
-      { expiresIn: "5m" }
+      { expiresIn: "10m" }
     );
     return { data: newAccessToken };
   } catch (error) {

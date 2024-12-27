@@ -23,7 +23,7 @@ function convertTo4Digit(number) {
 }
 const useToken = ({ payload, res }) => {
   const accessToken = jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: "1h",
+    expiresIn: "10m",
   });
   const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
     expiresIn: "90d",
@@ -31,7 +31,7 @@ const useToken = ({ payload, res }) => {
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    maxAge: 3 * 30 * 24 * 60 * 60 * 1000, //2 month
+    maxAge: 3 * 30 * 24 * 60 * 60 * 1000, //3 month
     path: "/",
   });
   return { accessToken, refreshToken };
