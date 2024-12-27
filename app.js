@@ -76,7 +76,6 @@ connectWithDB();
 app.use("/api/v1", routes);
 app.use("/health-check", (req, res) => res.status(200).json("Working"));
 app.use(handleError);
-app.set('trust proxy', true)
 // Undefined Route Implement
 app.use("*", (req, res) => {
   res.status(404).json({ status: "fail", data: "Route Not Found" });

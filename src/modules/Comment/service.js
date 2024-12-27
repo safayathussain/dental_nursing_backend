@@ -1,6 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const Comment = require("./model");
-
+const Question = require("../Question/model");
 const createComment = async (commentData) => {
   try {
     if (commentData?.rootCommentId) {
@@ -10,6 +10,11 @@ const createComment = async (commentData) => {
     }
     const newComment = new Comment(commentData);
     await newComment.save();
+    if (commentData.postType === "Question") {
+      await Question.findByIdAndUpdate(commentData?.postId, {
+        $inc: { commentsCount: 1 },
+      });
+    }
     return {
       data: await newComment.populate("userId", "name profilePicture"),
       message: "Comment created successfully",
