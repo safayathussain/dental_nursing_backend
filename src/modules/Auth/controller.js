@@ -15,7 +15,7 @@ const registerHandler = asyncHandler(async (req, res) => {
     profilePicture,
     firebaseUid,
   });
-  if (validatedData.error.message) {
+  if (validatedData.error) {
     return sendResponse({
       res,
       success: false,

@@ -7,15 +7,18 @@ const createUserSchema = Joi.object().keys({
     'any.required': 'Name is required', 
     'string.base': 'Name must be a string'
   }),
+  profilePicture: Joi.string().optional().messages({
+    'string.base': 'profilePicture must be a string'
+  }),
   email: Joi.string().email().required().messages({
     'any.required': 'Email is required',
     'string.base': 'Email must be a string',
     'string.email': 'Email must be a valid email address'
   }),
-  role: Joi.string().valid('admin', 'user').required().messages({
+  role: Joi.string().valid('AD', 'BU').required().messages({
     'any.required': 'Role is required',
     'string.base': 'Role must be a string',
-    'any.only': 'Role must be either "admin" or "user"'
+    'any.only': 'Role must be either "AD" or "BU"'
   }),
   firebaseUid: Joi.string().required().messages({
     'any.required': 'firebaseUid is required',
