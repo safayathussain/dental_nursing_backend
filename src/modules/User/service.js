@@ -4,8 +4,38 @@ const User = require("./model");
 const { NotFound, BadRequest } = require("../../utility/errors");
 const { useToken } = require("../../utility/common");
 
-//getAllUser
+const getUsers = async ({
+  limit = 10,
+  page = 1,
+  search = "",
+  latest = "false",
+}) => {
+  limit = Math.max(1, parseInt(limit, 10));
+  page = Math.max(1, parseInt(page, 10));
 
+  const query = {};
+  if (search) {
+    query.$or = [
+      { email: { $regex: search, $options: "i" } },
+    ];
+  }
+  const isLatest = latest.toLowerCase() === "true";
+  const sortOption = isLatest ? { createdAt: -1 } : {};
+  const users = await User.find(query)
+    .sort(sortOption)
+    .limit(limit)
+    .skip((page - 1) * limit);
+
+  const totalCount = await User.countDocuments(query);
+
+  return {
+    data: {
+      data: users,
+      totalCount,
+      totalPages: Math.ceil(totalCount / limit),
+    },
+  };
+};
 const getUserByFirebaseId = async (id, res) => {
   const user = await User.findOne({ firebaseUid: id }).lean();
   const { accessToken, refreshToken } = useToken({
@@ -23,4 +53,5 @@ const getUserByFirebaseId = async (id, res) => {
 
 module.exports = {
   getUserByFirebaseId,
+  getUsers
 };

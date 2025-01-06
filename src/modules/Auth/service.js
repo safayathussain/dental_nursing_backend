@@ -30,7 +30,7 @@ const UserRegister = async (
             _id: existedUser._id,
             name: existedUser.name,
             role: existedUser.role,
-            profilePicture: existedUser.profilePicture
+            profilePicture: existedUser.profilePicture,
           },
         });
         return { data: { ...existedUser, accessToken } };
@@ -41,7 +41,7 @@ const UserRegister = async (
       email,
       firebaseUid,
       profilePicture,
-      role,
+      role: role ? role : "BU",
       isVerified: provider ? true : false,
       otp: !provider ? otp : null,
     });
@@ -62,7 +62,7 @@ const UserRegister = async (
           name: user.name,
           _id: user._id,
           role: user.role,
-          profilePicture: user.profilePicture
+          profilePicture: user.profilePicture,
         },
       });
       return {
@@ -91,8 +91,7 @@ const VerifyOtp = async (email, otp, res) => {
           _id: updatedUser._id,
           name: updatedUser.name,
           role: updatedUser.role,
-          profilePicture: updatedUser.profilePicture
-
+          profilePicture: updatedUser.profilePicture,
         },
       });
       return {
@@ -144,7 +143,7 @@ const setPassword = async (email, password, res) => {
         _id: mongoUser._id,
         name: mongoUser.name,
         role: mongoUser.role,
-        profilePicture: mongoUser.profilePicture
+        profilePicture: mongoUser.profilePicture,
       },
     });
     return { data: { ...mongoUser, accessToken }, message: "Password updated" };
@@ -159,14 +158,14 @@ const setPassword = async (email, password, res) => {
 const refreshToken = async (refreshToken) => {
   try {
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-    const user = await UserModel.findById(decoded._id)
+    const user = await UserModel.findById(decoded._id);
     const newAccessToken = jwt.sign(
       {
         email: decoded.email,
         _id: decoded._id,
         role: decoded.role,
         name: user.name,
-        profilePicture: user.profilePicture
+        profilePicture: user.profilePicture,
       },
       process.env.JWT_SECRET,
       { expiresIn: "10m" }

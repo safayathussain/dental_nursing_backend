@@ -26,6 +26,33 @@ const registerHandler = asyncHandler(async (req, res) => {
   const { data, message, statusCode } = await userService.UserRegister(
     email,
     name,
+    profilePicture,
+    firebaseUid,
+    provider,
+    res
+  );
+  sendResponse({ res, data, message, statusCode });
+});
+const adminRegisterHandler = asyncHandler(async (req, res) => {
+  const { email, name, role, profilePicture, firebaseUid, provider } = req.body;
+  const validatedData = createUserValidate({
+    email,
+    name,
+    role,
+    profilePicture,
+    firebaseUid,
+  });
+  if (validatedData.error) {
+    return sendResponse({
+      res,
+      success: false,
+      message: validatedData.error.message,
+      statusCode: 500,
+    });
+  }
+  const { data, message, statusCode } = await userService.UserRegister(
+    email,
+    name,
     role,
     profilePicture,
     firebaseUid,
@@ -83,6 +110,7 @@ const logoutHandler = asyncHandler(async (req, res) => {
 });
 
 router.post("/register", registerHandler);
+router.post("/admin-register", adminRegisterHandler);
 router.post("/verify-otp", verifyOtpHandler);
 router.post("/send-otp", sendOtpHandler);
 router.post("/set-password", setPasswordHandler);
