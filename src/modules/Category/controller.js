@@ -36,8 +36,17 @@ const updateCategoryHandler = asyncHandler(async (req, res) => {
   sendResponse({ res, data, message, statusCode, success });
 });
 const getAllCategories = asyncHandler(async (req, res) => {
-  const categories = await CategoryModel.find();
-  sendResponse({ res, data: categories });
+  const { limit, page, search, category, latest } = req.query;
+  const { data, message, statusCode, success } =
+    await categoryService.getCategories({
+      limit,
+      page,
+      search,
+      category,
+      latest,
+    });
+
+  sendResponse({ res, data: data, message, statusCode, success });
 });
 const deleteCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;

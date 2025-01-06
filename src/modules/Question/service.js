@@ -1,6 +1,7 @@
 const { default: mongoose } = require("mongoose");
 const { NotFound, BadRequest } = require("../../utility/errors");
 const QuestionModel = require("./model");
+const CategoryModel = require("../Category/model");
 
 const createQuestion = async ({ content, title, userId, categories }) => {
   const question = await QuestionModel.create({
@@ -9,6 +10,11 @@ const createQuestion = async ({ content, title, userId, categories }) => {
     userId,
     categories,
   });
+  await Promise.all(
+    categories.map((item) =>
+      CategoryModel.findByIdAndUpdate(item, { $inc: { questionsCount: 1 } })
+    )
+  );
   return { data: question, message: "Question posted successfully" };
 };
 

@@ -1,6 +1,7 @@
 const { default: mongoose } = require("mongoose");
 const { NotFound, BadRequest } = require("../../utility/errors");
 const BlogModel = require("./model");
+const CategoryModel = require("../Category/model");
 
 const createBlog = async ({ content, title, userId, categories, tags }) => {
   const blog = await BlogModel.create({
@@ -10,10 +11,15 @@ const createBlog = async ({ content, title, userId, categories, tags }) => {
     categories,
     tags,
   });
+  await Promise.all(
+    categories.map((item) =>
+      CategoryModel.findByIdAndUpdate(item, { $inc: { blogsCount: 1 } })
+    )
+  );
   return { data: blog, message: "Blog published successfully" };
 };
 const editBlog = async ({ content, title, userId, categories, tags, id }) => {
-  console.log(title)
+  console.log(title);
   const blog = await BlogModel.findByIdAndUpdate(id, {
     content,
     title,
@@ -55,9 +61,7 @@ const getBlogs = async ({
 
   const query = {};
   if (search) {
-    query.$or = [
-      { title: { $regex: search, $options: "i" } },
-    ];
+    query.$or = [{ title: { $regex: search, $options: "i" } }];
   }
   if (Array.isArray(category) && category.length) {
     query.categories = { $in: category };

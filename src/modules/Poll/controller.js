@@ -59,8 +59,16 @@ const updatePollHandler = asyncHandler(async (req, res) => {
 
 // Get all polls
 const getAllPollsHandler = asyncHandler(async (req, res) => {
-  const polls = await PollModel.find();
-  sendResponse({ res, data: polls });
+  const { limit, page, search, category, latest } = req.query;
+  const { data, message, statusCode, success } = await pollService.getPolls({
+    limit,
+    page,
+    search,
+    category,
+    latest,
+  });
+
+  sendResponse({ res, data: data, message, statusCode, success });
 });
 
 // Delete a poll

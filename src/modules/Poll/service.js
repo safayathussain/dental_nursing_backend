@@ -21,12 +21,46 @@ const createPoll = async ({ content, options, userId }) => {
 
   return { data: poll, message: "Poll created successfully" };
 };
+const getPolls = async ({
+  limit = 10,
+  page = 1,
+  search = "",
+  latest = "false",
+}) => {
+  limit = Math.max(1, parseInt(limit, 10));
+  page = Math.max(1, parseInt(page, 10));
+
+  const query = {};
+  if (search) {
+    query.$or = [
+      { content: { $regex: search, $options: "i" } },
+    ];
+  }
+  const isLatest = latest.toLowerCase() === "true";
+  const sortOption = isLatest ? { createdAt: -1 } : {};
+  const polls = await PollModel.find(query)
+    .populate("userId", "name email profilePicture")
+    .sort(sortOption)
+    .limit(limit)
+    .skip((page - 1) * limit);
+
+  const totalCount = await PollModel.countDocuments(query);
+
+  return {
+    data: {
+      data: polls,
+      totalCount,
+      totalPages: Math.ceil(totalCount / limit),
+    },
+  };
+};
 
 const updatePoll = async (id, { content, options }) => {
   try {
     if (!id) {
       throw new Error("Poll ID is required");
     }
+
     const poll = await PollModel.findById(id);
     if (!poll) {
       return {
@@ -35,38 +69,53 @@ const updatePoll = async (id, { content, options }) => {
         success: false,
       };
     }
+
     const updateData = {};
     let newOptions = [];
+
+    // Update poll content if it has changed
     if (content && content !== poll.content) {
       updateData.content = content;
     }
+
     if (options?.length > 0) {
       const existingOptionIds = poll.options.map((opt) => opt._id.toString());
+
+      // Find existing options that are in the input
       const existingOptions = [];
+      const inputOptionIds = options
+        .filter((opt) => opt._id) // Filter only options with `_id`
+        .map((opt) => opt._id.toString());
+
       options.forEach((option) => {
         if (option._id && existingOptionIds.includes(option._id.toString())) {
           existingOptions.push(option);
         } else {
+          // Handle new options
           newOptions.push({
             value: option.value,
             voteCount: 0,
           });
         }
       });
-      const updatedExistingOptions = poll.options.map((existingOption) => {
-        const updatedOption = existingOptions.find(
-          (opt) => opt._id.toString() === existingOption._id.toString()
-        );
 
-        if (updatedOption) {
-          return {
-            ...existingOption.toObject(),
-            value: updatedOption.value || existingOption.value,
-            voteCount: existingOption.voteCount,
-          };
-        }
-        return existingOption;
-      });
+      // Update existing options and remove options not in the input
+      const updatedExistingOptions = poll.options
+        .filter((existingOption) => inputOptionIds.includes(existingOption._id.toString())) // Remove missing options
+        .map((existingOption) => {
+          const updatedOption = existingOptions.find(
+            (opt) => opt._id.toString() === existingOption._id.toString()
+          );
+
+          if (updatedOption) {
+            return {
+              ...existingOption.toObject(),
+              value: updatedOption.value || existingOption.value,
+              voteCount: existingOption.voteCount,
+            };
+          }
+          return existingOption;
+        });
 
       updateData.options = [...updatedExistingOptions, ...newOptions];
     }
@@ -165,4 +214,5 @@ module.exports = {
   updatePoll,
   deletePoll,
   voteInPoll,
+  getPolls
 };

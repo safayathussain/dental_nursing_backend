@@ -46,8 +46,43 @@ const deleteCategory = async (id) => {
   };
 };
 
+const getCategories = async ({
+  limit = 10,
+  page = 1,
+  search = "",
+  category = [],
+  latest = "false",
+}) => {
+  limit = Math.max(1, parseInt(limit, 10));
+  page = Math.max(1, parseInt(page, 10));
+  category = category.length && JSON.parse(category);
+
+  const query = {};
+  if (search) {
+    query.$or = [
+      { name: { $regex: search, $options: "i" } },
+    ];
+  }
+  const isLatest = latest.toLowerCase() === "true";
+  const sortOption = isLatest ? { createdAt: -1 } : {};
+  const categories = await CategoryModel.find(query)
+    .sort(sortOption)
+    .limit(limit)
+    .skip((page - 1) * limit);
+
+  const totalCount = await CategoryModel.countDocuments(query);
+
+  return {
+    data: {
+      data: categories,
+      totalCount,
+      totalPages: Math.ceil(totalCount / limit),
+    },
+  };
+};
 module.exports = {
   createCategory,
   updateCategory,
   deleteCategory,
+  getCategories
 };
