@@ -11,7 +11,7 @@ const createQuestion = async ({ content, title, userId, categories }) => {
     categories,
   });
   await Promise.all(
-    categories.map((item) =>
+    categories?.map((item) =>
       CategoryModel.findByIdAndUpdate(item, { $inc: { questionsCount: 1 } })
     )
   );

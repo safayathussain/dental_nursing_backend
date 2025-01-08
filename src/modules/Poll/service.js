@@ -15,7 +15,7 @@ const createPoll = async ({ content, options, userId }) => {
   // Create a new poll
   const poll = await PollModel.create({
     content,
-    options: options.map((option) => ({ value: option, voteCount: 0 })),
+    options: options?.map((option) => ({ value: option, voteCount: 0 })),
     userId,
   });
 
@@ -32,9 +32,7 @@ const getPolls = async ({
 
   const query = {};
   if (search) {
-    query.$or = [
-      { content: { $regex: search, $options: "i" } },
-    ];
+    query.$or = [{ content: { $regex: search, $options: "i" } }];
   }
   const isLatest = latest.toLowerCase() === "true";
   const sortOption = isLatest ? { createdAt: -1 } : {};
@@ -79,13 +77,12 @@ const updatePoll = async (id, { content, options }) => {
     }
 
     if (options?.length > 0) {
-      const existingOptionIds = poll.options.map((opt) => opt._id.toString());
+      const existingOptionIds = poll.options?.map((opt) => opt._id.toString());
 
       // Find existing options that are in the input
       const existingOptions = [];
       const inputOptionIds = options
-        .filter((opt) => opt._id) // Filter only options with `_id`
-        .map((opt) => opt._id.toString());
+        .filter((opt) => opt._id)?.map((opt) => opt._id.toString());
 
       options.forEach((option) => {
         if (option._id && existingOptionIds.includes(option._id.toString())) {
@@ -101,8 +98,10 @@ const updatePoll = async (id, { content, options }) => {
 
       // Update existing options and remove options not in the input
       const updatedExistingOptions = poll.options
-        .filter((existingOption) => inputOptionIds.includes(existingOption._id.toString())) // Remove missing options
-        .map((existingOption) => {
+        .filter((existingOption) =>
+          inputOptionIds.includes(existingOption._id.toString())
+        )
+        ?.map((existingOption) => {
           const updatedOption = existingOptions.find(
             (opt) => opt._id.toString() === existingOption._id.toString()
           );
@@ -214,5 +213,5 @@ module.exports = {
   updatePoll,
   deletePoll,
   voteInPoll,
-  getPolls
+  getPolls,
 };

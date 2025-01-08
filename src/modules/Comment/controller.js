@@ -14,7 +14,7 @@ const createCommentHandler = asyncHandler(async (req, res) => {
   const { error, value } = createCommentValidate(req.body);
   if (error) {
     return sendResponse({
-      message: error.details.map((err) => err.message).join(", "),
+      message: error.details?.map((err) => err.message).join(", "),
       res,
       statusCode: 400,
       success: false,

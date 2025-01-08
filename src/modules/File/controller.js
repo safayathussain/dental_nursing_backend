@@ -15,7 +15,7 @@ const uploadFileHandler = asyncHandler(async (req, res) => {
       message: "No files uploaded",
     });
   }
-  const fileUrls = req.files.map((file) => {
+  const fileUrls = req.files?.map((file) => {
     return { url: `${file.savedName}` };
   });
 

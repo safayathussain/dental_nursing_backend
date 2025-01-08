@@ -12,7 +12,7 @@ const createBlog = async ({ content, title, userId, categories, tags }) => {
     tags,
   });
   await Promise.all(
-    categories.map((item) =>
+    categories?.map((item) =>
       CategoryModel.findByIdAndUpdate(item, { $inc: { blogsCount: 1 } })
     )
   );
