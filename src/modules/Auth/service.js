@@ -203,8 +203,19 @@ const editProfile = async (id, data, userId) => {
       new: true,
       runValidators: true,
     });
+    const accessToken = jwt.sign(
+      {
+        email: updatedData.email,
+        _id: updatedData._id,
+        role: updatedData.role,
+        name: updatedData.name,
+        profilePicture: updatedData.profilePicture,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "10m" }
+    );
     return {
-      data: updatedData,
+      data: { ...updatedData.toObject(), accessToken },
       message: "Profile updated successfully",
       success: true,
     };
