@@ -3,13 +3,14 @@ const { NotFound, BadRequest } = require("../../utility/errors");
 const BlogModel = require("./model");
 const CategoryModel = require("../Category/model");
 
-const createBlog = async ({ content, title, userId, categories, tags }) => {
+const createBlog = async ({ content, title, userId, categories, tags, thumbnail }) => {
   const blog = await BlogModel.create({
     content,
     title,
     userId,
     categories,
     tags,
+    thumbnail
   });
   await Promise.all(
     categories?.map((item) =>
@@ -18,7 +19,7 @@ const createBlog = async ({ content, title, userId, categories, tags }) => {
   );
   return { data: blog, message: "Blog published successfully" };
 };
-const editBlog = async ({ content, title, userId, categories, tags, id }) => {
+const editBlog = async ({ content, title, userId, categories, tags, id, thumbnail }) => {
   console.log(title);
   const blog = await BlogModel.findByIdAndUpdate(id, {
     content,
@@ -26,6 +27,7 @@ const editBlog = async ({ content, title, userId, categories, tags, id }) => {
     userId,
     categories,
     tags,
+    thumbnail
   });
   return { data: blog, message: "Blog edited successfully" };
 };

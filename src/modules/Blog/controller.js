@@ -10,7 +10,7 @@ const { createBlogValidate } = require("./request");
 
 const createBlogHandler = asyncHandler(async (req, res) => {
   const body = req.body;
-  const { content, title, userId, categories, tags } = body;
+  const { content, title, userId, categories, tags , thumbnail} = body;
   const validatedData = createBlogValidate(body);
   if (validatedData?.error?.message) {
     return sendResponse({
@@ -26,13 +26,14 @@ const createBlogHandler = asyncHandler(async (req, res) => {
     userId,
     categories,
     tags,
+    thumbnail
   });
   sendResponse({ res, data, message, statusCode, success });
 });
 const editBlogHandler = asyncHandler(async (req, res) => {
   const body = req.body;
   const { id } = req.params;
-  const { content, title, userId, categories, tags } = body;
+  const { content, title, userId, categories, tags, thumbnail } = body;
   const validatedData = createBlogValidate(body);
   if (validatedData?.error?.message) {
     return sendResponse({
@@ -49,6 +50,7 @@ const editBlogHandler = asyncHandler(async (req, res) => {
     userId,
     categories,
     tags,
+    thumbnail
   });
   sendResponse({ res, data, message, statusCode, success });
 });

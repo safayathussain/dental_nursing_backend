@@ -8,6 +8,10 @@ const BlogSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    thumbnail: {
+      type: String,
+      required: true,
+    },
     categories: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Category",
@@ -20,7 +24,7 @@ const BlogSchema = new mongoose.Schema(
     },
     tags: {
       type: [String],
-      default: []
+      default: [],
     },
     commentsCount: { type: Number, default: 0 },
   },
