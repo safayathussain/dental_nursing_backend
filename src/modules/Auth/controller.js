@@ -26,6 +26,7 @@ const registerHandler = asyncHandler(async (req, res) => {
   const { data, message, statusCode } = await userService.UserRegister(
     email,
     name,
+    role,
     profilePicture,
     firebaseUid,
     provider,
@@ -75,6 +76,14 @@ const sendOtpHandler = asyncHandler(async (req, res) => {
   const { data, message, statusCode } = await userService.sendOtp(email);
   sendResponse({ res, data, message, statusCode });
 });
+const editProfileHandler = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { data, message, statusCode } = await userService.editProfile(
+    id,
+    req.body
+  );
+  sendResponse({ res, data, message, statusCode });
+});
 const setPasswordHandler = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const { data, message, statusCode } = await userService.setPassword(
@@ -116,5 +125,6 @@ router.post("/send-otp", sendOtpHandler);
 router.post("/set-password", setPasswordHandler);
 router.post("/refresh-token", refreshTokenHandler);
 router.post("/logout", logoutHandler);
+router.put("/edit-profile/:id", editProfileHandler);
 
 module.exports = router;

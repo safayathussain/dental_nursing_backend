@@ -28,7 +28,7 @@ const useToken = ({ payload, res }) => {
   const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
     expiresIn: "90d",
   });
-  res.cookie("refreshToken", refreshToken, {
+  res?.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     maxAge: 3 * 30 * 24 * 60 * 60 * 1000, //3 month

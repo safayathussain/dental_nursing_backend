@@ -33,13 +33,13 @@ const editBlog = async ({ content, title, userId, categories, tags, id }) => {
 const deleteBlog = async (id) => {
   const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId) {
-    return { statusCode: 404, message: "Question Not found", success: false };
+    return { statusCode: 404, message: "Blog Not found", success: false };
   }
   const question = await BlogModel.findOneAndDelete({ _id: id });
   if (!question) {
     return {
       statusCode: 404,
-      message: "Question Not found",
+      message: "Blog Not found",
       success: false,
     };
   }
@@ -89,14 +89,14 @@ const getBlogs = async ({
 const getSingleBlog = async (id) => {
   const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId) {
-    return { statusCode: 404, message: "Question Not found", success: false };
+    return { statusCode: 404, message: "Blog Not found", success: false };
   }
   const question = await BlogModel.findById(id)
     .lean()
     .populate("userId", "name email profilePicture")
     .populate("categories", "name");
   if (!question) {
-    return { message: "Question not found", statusCode: 404, success: false };
+    return { message: "Blog not found", statusCode: 404, success: false };
   }
   return { data: { question } };
 };

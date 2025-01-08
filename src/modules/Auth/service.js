@@ -3,6 +3,7 @@ const { generateOTP, useToken } = require("../../utility/common");
 const UserModel = require("../User/model");
 const { admin, auth } = require("../../utility/firebase");
 const jwt = require("jsonwebtoken");
+const { sendEmail, getOtpEmailTamplate } = require("../../utility/email");
 const UserRegister = async (
   email,
   name,
@@ -47,12 +48,8 @@ const UserRegister = async (
     });
     await user.save();
     if (!provider) {
-      // Send OTP to email
-      // await SendEmailUtility(
-      //   email,
-      //   "OTP for registration",
-      //   `Your OTP for registration: ${otp}`
-      // );
+      sendEmail(email, "subject", getOtpEmailTamplate(otp));
+
       return { message: "Otp sent to your email" };
     } else {
       const { accessToken, refreshToken } = useToken({
@@ -66,7 +63,7 @@ const UserRegister = async (
         },
       });
       return {
-        data: { ...user, accessToken },
+        data: { ...user.toObject(), accessToken },
         message: "User registered successfully",
       };
     }
@@ -117,12 +114,14 @@ const sendOtp = async (email) => {
     if (!user) {
       return { message: "User not found", statusCode: 404, success: false };
     }
-    // send otp
     await UserModel.findOneAndUpdate(
       { _id: user._id },
       { $set: { otp } },
       { new: true }
     );
+
+    sendEmail(email, "subject", getOtpEmailTamplate(otp));
+
     return { message: "Otp Sent to your email" };
   } catch (error) {
     console.error(error);
@@ -178,6 +177,25 @@ const refreshToken = async (refreshToken) => {
     throw new BadRequest("Failed to get token.");
   }
 };
+const editProfile = async (id, data) => {
+  try {
+    const updatedData = await UserModel.findByIdAndUpdate(id, data, {
+      returnDocument: "after",
+    });
+    if (!updatedData) {
+      return { message: "User not found", success: false, statusCode: 404 };
+    }
+    return { data: updatedData, message: "Profile updated" };
+  } catch (error) {
+    if (error.message) {
+      return {
+        message: error.message || "Edit profile failed",
+        success: false,
+        statusCode: 500,
+      };
+    }
+  }
+};
 
 module.exports = {
   UserRegister,
@@ -185,4 +203,5 @@ module.exports = {
   sendOtp,
   setPassword,
   refreshToken,
+  editProfile,
 };

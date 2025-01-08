@@ -15,9 +15,7 @@ const getUsers = async ({
 
   const query = {};
   if (search) {
-    query.$or = [
-      { email: { $regex: search, $options: "i" } },
-    ];
+    query.$or = [{ email: { $regex: search, $options: "i" } }];
   }
   const isLatest = latest.toLowerCase() === "true";
   const sortOption = isLatest ? { createdAt: -1 } : {};
@@ -38,6 +36,7 @@ const getUsers = async ({
 };
 const getUserByFirebaseId = async (id, res) => {
   const user = await User.findOne({ firebaseUid: id }).lean();
+  if (!user) return { message: "User not found", statusCode: 404 };
   const { accessToken, refreshToken } = useToken({
     res,
     payload: {
@@ -53,5 +52,5 @@ const getUserByFirebaseId = async (id, res) => {
 
 module.exports = {
   getUserByFirebaseId,
-  getUsers
+  getUsers,
 };

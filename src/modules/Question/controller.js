@@ -32,7 +32,7 @@ const createQuestionHandler = asyncHandler(async (req, res) => {
 });
 
 const getAllQuestionHandler = asyncHandler(async (req, res) => {
-  const { limit, page, search, category, latest } = req.query;
+  const { limit, page, search, category, latest, userId } = req.query;
   const { data, message, statusCode, success } =
     await questionService.getQuestions({
       limit,
@@ -40,6 +40,7 @@ const getAllQuestionHandler = asyncHandler(async (req, res) => {
       search,
       category,
       latest,
+      userId
     });
 
   sendResponse({ res, data: data, message, statusCode, success });

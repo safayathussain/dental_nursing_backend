@@ -19,6 +19,7 @@ const createQuestion = async ({ content, title, userId, categories }) => {
 };
 
 const deleteQuestion = async (id) => {
+  console.log(id);
   const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId) {
     return { statusCode: 404, message: "Question Not found", success: false };
@@ -82,6 +83,7 @@ const getQuestions = async ({
   search = "",
   category = [],
   latest = "false",
+  userId = null,
 }) => {
   limit = Math.max(1, parseInt(limit, 10));
   page = Math.max(1, parseInt(page, 10));
@@ -96,6 +98,9 @@ const getQuestions = async ({
   }
   if (Array.isArray(category) && category.length) {
     query.categories = { $in: category };
+  }
+  if (userId) {
+    query.userId = userId;
   }
   const isLatest = latest.toLowerCase() === "true";
   const sortOption = isLatest ? { createdAt: -1 } : {};

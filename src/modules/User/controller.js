@@ -9,8 +9,11 @@ const roleMiddleware = require("../../middlewares/roleMiddleware");
 
 const getUserByFirebaseIdHandler = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { data } = await userService.getUserByFirebaseId(id, res);
-  sendResponse({ res, data });
+  const { data, message, statusCode } = await userService.getUserByFirebaseId(
+    id,
+    res
+  );
+  sendResponse({ res, data, statusCode, message });
 });
 const getAllUsers = asyncHandler(async (req, res) => {
   const { limit, page, search, latest } = req.query;

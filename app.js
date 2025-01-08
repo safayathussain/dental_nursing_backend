@@ -58,7 +58,7 @@ const corsOptions = {
       }
     }
   },
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 };
 
