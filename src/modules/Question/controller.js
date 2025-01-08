@@ -40,7 +40,7 @@ const getAllQuestionHandler = asyncHandler(async (req, res) => {
       search,
       category,
       latest,
-      userId
+      userId,
     });
 
   sendResponse({ res, data: data, message, statusCode, success });
@@ -53,8 +53,9 @@ const getQuestionHandler = asyncHandler(async (req, res) => {
 });
 const deleteQuestionHandler = asyncHandler(async (req, res) => {
   const { id } = req.params;
+
   const { data, message, statusCode, success } =
-    await questionService.deleteQuestion(id);
+    await questionService.deleteQuestion(id, req._id);
   sendResponse({ res, data, message, statusCode, success });
 });
 const likeQuestionHandler = asyncHandler(async (req, res) => {

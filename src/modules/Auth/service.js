@@ -4,6 +4,7 @@ const UserModel = require("../User/model");
 const { admin, auth } = require("../../utility/firebase");
 const jwt = require("jsonwebtoken");
 const { sendEmail, getOtpEmailTamplate } = require("../../utility/email");
+const { default: mongoose } = require("mongoose");
 const UserRegister = async (
   email,
   name,
@@ -177,23 +178,42 @@ const refreshToken = async (refreshToken) => {
     throw new BadRequest("Failed to get token.");
   }
 };
-const editProfile = async (id, data) => {
+const editProfile = async (id, data, userId) => {
   try {
-    const updatedData = await UserModel.findByIdAndUpdate(id, data, {
-      returnDocument: "after",
-    });
-    if (!updatedData) {
-      return { message: "User not found", success: false, statusCode: 404 };
+    const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
+    if (!isValidObjectId) {
+      return { statusCode: 404, message: "User not found", success: false };
     }
-    return { data: updatedData, message: "Profile updated" };
-  } catch (error) {
-    if (error.message) {
+    const user = await UserModel.findById(id);
+    if (!user) {
       return {
-        message: error.message || "Edit profile failed",
+        statusCode: 404,
+        message: "User not found",
         success: false,
-        statusCode: 500,
       };
     }
+    if (userId !== user._id.toString() && userId.role !== "AD") {
+      return {
+        statusCode: 403,
+        message: "You do not have permission to edit this profile",
+        success: false,
+      };
+    }
+    const updatedData = await UserModel.findByIdAndUpdate(id, data, {
+      new: true,
+      runValidators: true,
+    });
+    return {
+      data: updatedData,
+      message: "Profile updated successfully",
+      success: true,
+    };
+  } catch (error) {
+    return {
+      message: error.message || "Edit profile failed",
+      success: false,
+      statusCode: 500,
+    };
   }
 };
 

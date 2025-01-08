@@ -120,12 +120,7 @@ const dislikeCommentHandler = asyncHandler(async (req, res) => {
     await commentService.dislikeComment(req, commentId);
   sendResponse({ res, data, message, statusCode, success });
 });
-router.post(
-  "/create-comment",
-  // authMiddleware,
-  // roleMiddleware(["AD"]),
-  createCommentHandler // Pass the io instance to the handler
-);
+router.post("/create-comment", authMiddleware, createCommentHandler);
 router.get("/root-comments/:postId", getRootCommentHandler);
 router.get("/latest-root-comments/:postId/:time", getLatestRootCommentHandler);
 router.get("/replies/:commentId", getRepliesOfCommentHandler);

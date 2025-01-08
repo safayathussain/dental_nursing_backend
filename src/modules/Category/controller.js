@@ -54,19 +54,24 @@ const deleteCategory = asyncHandler(async (req, res) => {
     await categoryService.deleteCategory(id);
   sendResponse({ res, data, message, statusCode, success });
 });
+router.get("/all-categories", getAllCategories);
 router.post(
   "/create-category",
-  // authMiddleware,
-  // roleMiddleware(["AD"]),
+  authMiddleware,
+  roleMiddleware(["AD"]),
   createCategoryHandler
 );
 router.put(
   "/update-category/:id",
-  // authMiddleware,
-  // roleMiddleware(["AD"]),
+  authMiddleware,
+  roleMiddleware(["AD"]),
   updateCategoryHandler
 );
-router.get("/all-categories", getAllCategories);
-router.delete("/delete-category/:id", deleteCategory);
+router.delete(
+  "/delete-category/:id",
+  authMiddleware,
+  roleMiddleware(["AD"]),
+  deleteCategory
+);
 
 module.exports = router;

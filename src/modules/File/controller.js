@@ -30,7 +30,7 @@ const uploadFileHandler = asyncHandler(async (req, res) => {
 
 router.post(
   "/upload-files",
-  // authMiddleware,
+  authMiddleware,
   upload,
   uploadFileHandler
 );

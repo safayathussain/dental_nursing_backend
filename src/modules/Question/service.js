@@ -18,25 +18,34 @@ const createQuestion = async ({ content, title, userId, categories }) => {
   return { data: question, message: "Question posted successfully" };
 };
 
-const deleteQuestion = async (id) => {
-  console.log(id);
+const deleteQuestion = async (id, userId) => {
   const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId) {
-    return { statusCode: 404, message: "Question Not found", success: false };
+    return { statusCode: 404, message: "Question not found", success: false };
   }
-  const question = await QuestionModel.findOneAndDelete({ _id: id });
+  const question = await QuestionModel.findById(id);
   if (!question) {
     return {
       statusCode: 404,
-      message: "Question Not found",
+      message: "Question not found",
       success: false,
     };
   }
+  if (userId !== question.userId.toString() && userId.role !== "AD") {
+    return {
+      statusCode: 403,
+      message: "You do not have permission to delete this question",
+      success: false,
+    };
+  }
+  const deletedQuestion = await QuestionModel.findByIdAndDelete(id);
   return {
-    data: question,
+    data: deletedQuestion,
     message: "Question deleted successfully",
+    success: true,
   };
 };
+
 const likeQuestion = async (req, id) => {
   const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId) {

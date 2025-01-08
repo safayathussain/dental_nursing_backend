@@ -80,7 +80,8 @@ const editProfileHandler = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { data, message, statusCode } = await userService.editProfile(
     id,
-    req.body
+    req.body,
+    req._id
   );
   sendResponse({ res, data, message, statusCode });
 });
@@ -125,6 +126,6 @@ router.post("/send-otp", sendOtpHandler);
 router.post("/set-password", setPasswordHandler);
 router.post("/refresh-token", refreshTokenHandler);
 router.post("/logout", logoutHandler);
-router.put("/edit-profile/:id", editProfileHandler);
+router.put("/edit-profile/:id", authMiddleware, editProfileHandler);
 
 module.exports = router;

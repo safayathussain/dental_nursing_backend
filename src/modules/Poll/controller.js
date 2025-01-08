@@ -145,19 +145,24 @@ const getPollResponseByUserId = asyncHandler(async (req, res) => {
 // Routes
 router.post(
   "/create-poll",
-  // authMiddleware,
-  // roleMiddleware(["AD"]),
+  authMiddleware,
+  roleMiddleware(["AD"]),
   createPollHandler
 );
 router.put(
   "/update-poll/:id",
-  // authMiddleware,
-  // roleMiddleware(["AD"]),
+  authMiddleware,
+  roleMiddleware(["AD"]),
   updatePollHandler
 );
 router.get("/all-polls", getAllPollsHandler);
-router.delete("/delete-poll/:id", deletePollHandler);
-router.post("/vote", voteHandler);
+router.delete(
+  "/delete-poll/:id",
+  authMiddleware,
+  roleMiddleware(["AD"]),
+  deletePollHandler
+);
+router.post("/vote", authMiddleware, voteHandler);
 router.get("/latest-poll", getLatestPoll);
 router.get("/poll-response/:pollId/:userId", getPollResponseByUserId);
 

@@ -80,9 +80,24 @@ const deleteBlogHandler = asyncHandler(async (req, res) => {
 });
 
 router.get("/all-blogs", getAllBlogsHandler);
-router.post("/post-blog", authMiddleware, createBlogHandler);
-router.put("/edit-blog/:id", authMiddleware, editBlogHandler);
-router.delete("/delete-blog/:id", authMiddleware, deleteBlogHandler);
+router.post(
+  "/post-blog",
+  authMiddleware,
+  roleMiddleware(["AD"]),
+  createBlogHandler
+);
+router.put(
+  "/edit-blog/:id",
+  authMiddleware,
+  roleMiddleware(["AD"]),
+  editBlogHandler
+);
+router.delete(
+  "/delete-blog/:id",
+  authMiddleware,
+  roleMiddleware(["AD"]),
+  deleteBlogHandler
+);
 
 // take it in last
 router.get("/:id", getBlogHandler);
