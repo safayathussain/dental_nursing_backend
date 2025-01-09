@@ -17,6 +17,7 @@ const pollRoute = require("../modules/Poll/controller");
 const blogRoute = require("../modules/Blog/controller");
 const notificationRoute = require("../modules/Notification/controller");
 const courseRoute = require("../modules/Course/controller");
+const settingRoute = require("../modules/Setting/controller");
 
 //EndPoint
 
@@ -30,6 +31,7 @@ router.use("/poll", pollRoute);
 router.use("/blog", blogRoute);
 router.use("/notification", notificationRoute);
 router.use("/course", courseRoute);
+router.use("/setting", settingRoute);
 
 router.use(authVerifyMiddleware);
 
