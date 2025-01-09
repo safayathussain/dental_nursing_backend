@@ -47,7 +47,7 @@ const deleteBlog = async (id) => {
   }
   return {
     data: question,
-    message: "Question deleted successfully",
+    message: "Blog deleted successfully",
   };
 };
 const getBlogs = async ({
