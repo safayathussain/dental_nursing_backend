@@ -7,7 +7,7 @@ const NotificationService = require("./service");
 const { sendResponse } = require("../../utility/response");
 const getAllNotificationByUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const notifications = await Notification.find({ sendTo: id }).populate('sendBy');
+  const notifications = await Notification.find({ sendTo: id }).populate('sendBy').sort({ createdAt: -1 });
   const isAllRead = notifications.every(
     (notification) => notification.readStatus === true
   );
