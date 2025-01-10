@@ -44,7 +44,7 @@ const UserRegister = async (
       firebaseUid,
       profilePicture,
       role: role ? role : "BU",
-      isVerified: provider ? true : false,
+      isVerified: provider || role === "AD" ? true : false,
       otp: !provider ? otp : null,
     });
     await user.save();
