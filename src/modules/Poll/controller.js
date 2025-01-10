@@ -13,7 +13,7 @@ const createPollHandler = asyncHandler(async (req, res) => {
   const { content, options, userId } = req.body;
   if (!content || typeof content !== "string")
     return sendResponse({
-      message: "content is not valid",
+      message: "Invalid poll content",
       res,
       statusCode: 400,
       success: false,
@@ -95,7 +95,7 @@ const voteHandler = asyncHandler(async (req, res) => {
     });
   if (!pollId || !optionId)
     return sendResponse({
-      message: "Poll ID and option id are required",
+      message: "Poll ID and option ID are required",
       res,
       statusCode: 400,
       success: false,
@@ -114,7 +114,7 @@ const getLatestPoll = asyncHandler(async (req, res) => {
   sendResponse({
     res,
     statusCode: 200,
-    message: "Latest poll retrieved successfully",
+    message: "Poll retrieved",
     data: latestPoll,
     success: true,
   });
@@ -125,7 +125,7 @@ const getPollById = asyncHandler(async (req, res) => {
   sendResponse({
     res,
     statusCode: 200,
-    message: "Poll retrieved successfully",
+    message: "Poll retrieved",
     data: poll,
     success: true,
   });
@@ -136,7 +136,7 @@ const getPollResponseByUserId = asyncHandler(async (req, res) => {
   sendResponse({
     res,
     statusCode: 200,
-    message: "Poll response retrieved successfully",
+    message: "Poll response retrieved",
     data: poll,
     success: true,
   });

@@ -19,7 +19,7 @@ const createPoll = async ({ content, options, userId }) => {
     userId,
   });
 
-  return { data: poll, message: "Poll created successfully" };
+  return { data: poll, message: "Poll created" };
 };
 const getPolls = async ({
   limit = 10,
@@ -123,7 +123,7 @@ const updatePoll = async (id, { content, options }) => {
     if (Object.keys(updateData).length === 0) {
       return {
         data: poll,
-        message: "No changes to update",
+        message: "Nothing to update",
         success: true,
       };
     }
@@ -164,7 +164,7 @@ const deletePoll = async (id) => {
 
   return {
     data: poll,
-    message: "Poll deleted successfully",
+    message: "Poll deleted",
   };
 };
 
@@ -181,7 +181,7 @@ const voteInPoll = async (pollId, optionId, userId) => {
   if (poll.votedUser.includes(userId)) {
     return {
       statusCode: 403,
-      message: "You have already voted in this poll",
+      message: "You’ve already voted in this poll",
       success: false,
     };
   }
@@ -204,7 +204,7 @@ const voteInPoll = async (pollId, optionId, userId) => {
   await poll.save();
   return {
     data: poll,
-    message: "Vote cast successfully",
+    message: "Vote submitted successfully",
   };
 };
 

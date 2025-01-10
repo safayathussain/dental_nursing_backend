@@ -13,7 +13,7 @@ const createCategory = async (name) => {
   const category = await CategoryModel.create({
     name: name,
   });
-  return { data: category, message: "Category added successfully" };
+  return { data: category, message: "Category added" };
 };
 const updateCategory = async (name, id) => {
   const updatedCategory = await CategoryModel.findOneAndUpdate(
@@ -25,24 +25,24 @@ const updateCategory = async (name, id) => {
   if (!updatedCategory) {
     return {
       statusCode: 404,
-      message: "Category Not found",
+      message: "Category not found",
       success: false,
     };
   }
-  return { data: updatedCategory, message: "Category updated successfully" };
+  return { data: updatedCategory, message: "Category updated" };
 };
 const deleteCategory = async (id) => {
   const category = await CategoryModel.findOneAndDelete({ _id: id });
   if (!category) {
     return {
       statusCode: 404,
-      message: "Category Not found",
+      message: "Category not found",
       success: false,
     };
   }
   return {
     data: category,
-    message: "Category deleted successfully",
+    message: "Category deleted",
   };
 };
 

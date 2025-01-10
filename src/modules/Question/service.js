@@ -15,7 +15,7 @@ const createQuestion = async ({ content, title, userId, categories }) => {
       CategoryModel.findByIdAndUpdate(item, { $inc: { questionsCount: 1 } })
     )
   );
-  return { data: question, message: "Question posted successfully" };
+  return { data: question, message: "Question posted" };
 };
 
 const deleteQuestion = async (id, userId) => {
@@ -34,14 +34,14 @@ const deleteQuestion = async (id, userId) => {
   if (userId !== question.userId.toString() && userId.role !== "AD") {
     return {
       statusCode: 403,
-      message: "You do not have permission to delete this question",
+      message: "You can’t delete this question",
       success: false,
     };
   }
   const deletedQuestion = await QuestionModel.findByIdAndDelete(id);
   return {
     data: deletedQuestion,
-    message: "Question deleted successfully",
+    message: "Question deleted",
     success: true,
   };
 };
@@ -49,7 +49,7 @@ const deleteQuestion = async (id, userId) => {
 const likeQuestion = async (req, id) => {
   const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId) {
-    return { statusCode: 404, message: "Question Not found", success: false };
+    return { statusCode: 404, message: "Question not found", success: false };
   }
   const question = await QuestionModel.findByIdAndUpdate(id, {
     $addToSet: { likedUser: req._id },
@@ -57,19 +57,19 @@ const likeQuestion = async (req, id) => {
   if (!question) {
     return {
       statusCode: 404,
-      message: "Question Not found",
+      message: "Question not found",
       success: false,
     };
   }
   return {
     data: question,
-    message: "Question liked successfully",
+    message: "Question liked",
   };
 };
 const dislikeQuestion = async (req, id) => {
   const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId) {
-    return { statusCode: 404, message: "Question Not found", success: false };
+    return { statusCode: 404, message: "Question not found", success: false };
   }
   const question = await QuestionModel.findByIdAndUpdate(id, {
     $pull: { likedUser: req._id },
@@ -77,13 +77,13 @@ const dislikeQuestion = async (req, id) => {
   if (!question) {
     return {
       statusCode: 404,
-      message: "Question Not found",
+      message: "Question not found",
       success: false,
     };
   }
   return {
     data: question,
-    message: "Question disliked successfully",
+    message: "Question disliked",
   };
 };
 const getQuestions = async ({
@@ -134,7 +134,7 @@ const getQuestions = async ({
 const getSingleQuestion = async (id) => {
   const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId) {
-    return { statusCode: 404, message: "Question Not found", success: false };
+    return { statusCode: 404, message: "Question not found", success: false };
   }
   const question = await QuestionModel.findById(id)
     .lean()

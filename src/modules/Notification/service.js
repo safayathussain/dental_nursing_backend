@@ -8,7 +8,7 @@ const readAllNotifications = async (id) => {
   if (updatedNotifications.nModified === 0) {
     return {
       statusCode: 404,
-      message: "No notifications found to update",
+      message: "No notifications to update",
       success: false,
     };
   }

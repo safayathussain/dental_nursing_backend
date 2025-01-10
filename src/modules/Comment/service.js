@@ -17,14 +17,14 @@ const createComment = async (commentData) => {
     }
     return {
       data: await newComment.populate("userId", "name profilePicture"),
-      message: "Comment created successfully",
+      message: "Comment added",
       statusCode: 201,
       success: true,
     };
   } catch (err) {
     return {
       data: null,
-      message: "Failed to create comment",
+      message: "Failed to add comment",
       statusCode: 500,
       success: false,
     };
@@ -60,7 +60,7 @@ const getRepliesOfComment = async (rootCommentId) => {
 const likeComment = async (req, id) => {
   const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId) {
-    return { statusCode: 404, message: "Comment Not found", success: false };
+    return { statusCode: 404, message: "Comment not found", success: false };
   }
   const comment = await Comment.findByIdAndUpdate(id, {
     $addToSet: { likedUser: req._id },
@@ -68,19 +68,19 @@ const likeComment = async (req, id) => {
   if (!comment) {
     return {
       statusCode: 404,
-      message: "Comment Not found",
+      message: "Comment not found",
       success: false,
     };
   }
   return {
     data: comment,
-    message: "Comment liked successfully",
+    message: "Comment liked",
   };
 };
 const dislikeComment = async (req, id) => {
   const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId) {
-    return { statusCode: 404, message: "Comment Not found", success: false };
+    return { statusCode: 404, message: "Comment not found", success: false };
   }
   const comment = await Comment.findByIdAndUpdate(id, {
     $pull: { likedUser: req._id },
@@ -88,13 +88,13 @@ const dislikeComment = async (req, id) => {
   if (!comment) {
     return {
       statusCode: 404,
-      message: "Comment Not found",
+      message: "Comment not found",
       success: false,
     };
   }
   return {
     data: comment,
-    message: "Comment disliked successfully",
+    message: "Comment disliked",
   };
 };
 module.exports = {

@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
     return sendResponse({
       res,
       statusCode: 401,
-      message: "You need to login",
+      message: "Please log in to continue.",
       success: false,
     });
   }
@@ -17,7 +17,7 @@ module.exports = (req, res, next) => {
       return sendResponse({
         res,
         statusCode: 401,
-        message: "Invalid or expired token",
+        message: "Your session has expired. Please log in again.",
       });
     }
 

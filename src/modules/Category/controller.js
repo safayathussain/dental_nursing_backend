@@ -12,7 +12,7 @@ const createCategoryHandler = asyncHandler(async (req, res) => {
   const { name } = req.body;
   if (!name || typeof name !== "string")
     return sendResponse({
-      message: "Name is not valid",
+      message: "Invalid category name",
       res,
       statusCode: 400,
       success: false,
@@ -26,7 +26,7 @@ const updateCategoryHandler = asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (!name || typeof name !== "string")
     return sendResponse({
-      message: "Name is not valid",
+      message: "Invalid category name",
       res,
       statusCode: 400,
       success: false,

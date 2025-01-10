@@ -112,7 +112,7 @@ const sendMailContact = asyncHandler(async (req, res) => {
     return sendResponse({
       res,
       status: 400,
-      message: "Missing required fields",
+      message: "Please fill in all required fields",
     });
   }
   if (!validator.isEmail(data?.email)) {
@@ -136,7 +136,7 @@ const sendMailContact = asyncHandler(async (req, res) => {
   const tamplate = getMailTemplate(data, course, user);
 
   sendEmail(data?.sendByMail, "Contact for course", tamplate);
-  sendResponse({ res, message: "Contact mail sent successfully" });
+  sendResponse({ res, message: "Contact email sent" });
 });
 
 router.post("/send-mail",   sendMailContact);

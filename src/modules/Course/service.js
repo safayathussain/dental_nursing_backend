@@ -10,7 +10,7 @@ const createCourse = async ({ description, title, userId, url, thumbnail }) => {
     url,
     thumbnail,
   });
-  return { data: blog, message: "Course published successfully" };
+  return { data: blog, message: "Course published" };
 };
 const editCourse = async ({
   description,
@@ -27,25 +27,25 @@ const editCourse = async ({
     url,
     thumbnail,
   });
-  return { data: blog, message: "Course edited successfully" };
+  return { data: blog, message: "Course updated" };
 };
 
 const deleteCourse = async (id) => {
   const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId) {
-    return { statusCode: 404, message: "Course Not found", success: false };
+    return { statusCode: 404, message: "Course not found", success: false };
   }
   const question = await CourseModel.findOneAndDelete({ _id: id });
   if (!question) {
     return {
       statusCode: 404,
-      message: "Course Not found",
+      message: "Course not found",
       success: false,
     };
   }
   return {
     data: question,
-    message: "Course deleted successfully",
+    message: "Course deleted",
   };
 };
 const getCourses = async ({

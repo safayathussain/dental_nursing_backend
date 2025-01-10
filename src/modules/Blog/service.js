@@ -17,7 +17,7 @@ const createBlog = async ({ content, title, userId, categories, tags, thumbnail 
       CategoryModel.findByIdAndUpdate(item, { $inc: { blogsCount: 1 } })
     )
   );
-  return { data: blog, message: "Blog published successfully" };
+  return { data: blog, message: "Blog published" };
 };
 const editBlog = async ({ content, title, userId, categories, tags, id, thumbnail }) => {
   console.log(title);
@@ -29,25 +29,25 @@ const editBlog = async ({ content, title, userId, categories, tags, id, thumbnai
     tags,
     thumbnail
   });
-  return { data: blog, message: "Blog edited successfully" };
+  return { data: blog, message: "Blog updated" };
 };
 
 const deleteBlog = async (id) => {
   const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId) {
-    return { statusCode: 404, message: "Blog Not found", success: false };
+    return { statusCode: 404, message: "Blog not found", success: false };
   }
   const question = await BlogModel.findOneAndDelete({ _id: id });
   if (!question) {
     return {
       statusCode: 404,
-      message: "Blog Not found",
+      message: "Blog not found",
       success: false,
     };
   }
   return {
     data: question,
-    message: "Blog deleted successfully",
+    message: "Blog deleted",
   };
 };
 const getBlogs = async ({
@@ -91,7 +91,7 @@ const getBlogs = async ({
 const getSingleBlog = async (id) => {
   const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId) {
-    return { statusCode: 404, message: "Blog Not found", success: false };
+    return { statusCode: 404, message: "Blog not found", success: false };
   }
   const question = await BlogModel.findById(id)
     .lean()

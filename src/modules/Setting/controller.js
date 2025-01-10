@@ -21,8 +21,8 @@ const updateSettingHandler = asyncHandler(async (req, res) => {
 
   sendResponse({
     res,
-    data: { message: "Setting updated successfully" },
-    message: "Setting updated successfully",
+    data: { message: "Setting updated" },
+    message: "Setting updated",
     statusCode: 200,
     success: true,
   });
@@ -33,7 +33,7 @@ const getSettingHandler = asyncHandler(async (req, res) => {
   sendResponse({
     res,
     data: settings?.[0],
-    message: "Settings retrieved successfully",
+    message: "Settings retrieved",
     statusCode: 200,
     success: true,
   });

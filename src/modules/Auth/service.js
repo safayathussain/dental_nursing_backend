@@ -22,7 +22,7 @@ const UserRegister = async (
         return {
           statusCode: 400,
           success: false,
-          message: "User already exists",
+          message: "This user already exists",
         };
       } else {
         const { accessToken, refreshToken } = useToken({
@@ -51,7 +51,7 @@ const UserRegister = async (
     if (!provider) {
       sendEmail(email, "subject", getOtpEmailTamplate(otp));
 
-      return { message: "Otp sent to your email" };
+      return { message: "Check your email for the OTP." };
     } else {
       const { accessToken, refreshToken } = useToken({
         res,
@@ -65,7 +65,7 @@ const UserRegister = async (
       });
       return {
         data: { ...user.toObject(), accessToken },
-        message: "User registered successfully",
+        message: "You’ve been registered successfully",
       };
     }
   } catch (error) {
@@ -94,12 +94,12 @@ const VerifyOtp = async (email, otp, res) => {
       });
       return {
         data: { ...updatedUser.toObject(), accessToken },
-        message: "Otp verified successfully",
+        message: "OTP verified successfully",
       };
     } else {
       return {
         statusCode: 500,
-        message: "Otp doesn't match",
+        message: "The OTP doesn’t match",
         success: false,
       };
     }
@@ -123,7 +123,7 @@ const sendOtp = async (email) => {
 
     sendEmail(email, "subject", getOtpEmailTamplate(otp));
 
-    return { message: "Otp Sent to your email" };
+    return { message: "Check your email for the OTP." };
   } catch (error) {
     console.error(error);
     throw new BadRequest("Failed to send otp.");
@@ -195,7 +195,7 @@ const editProfile = async (id, data, userId) => {
     if (userId !== user._id.toString() && userId.role !== "AD") {
       return {
         statusCode: 403,
-        message: "You do not have permission to edit this profile",
+        message: "You don’t have permission to edit this profile",
         success: false,
       };
     }
@@ -216,12 +216,12 @@ const editProfile = async (id, data, userId) => {
     );
     return {
       data: { ...updatedData.toObject(), accessToken },
-      message: "Profile updated successfully",
+      message: "Profile updated",
       success: true,
     };
   } catch (error) {
     return {
-      message: error.message || "Edit profile failed",
+      message: error.message || "Failed to update profile",
       success: false,
       statusCode: 500,
     };
