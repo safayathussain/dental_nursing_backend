@@ -1,9 +1,6 @@
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 
-async function sendEmail(to, subject, htmlContent) {
-
-
-  console.log("first")
+async function sendEmail(to, subject, htmlContent,  ) {
   try {
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -26,9 +23,7 @@ async function sendEmail(to, subject, htmlContent) {
   }
 }
 
-
-
-function getOtpEmailTamplate (otp) {
+function getOtpEmailTamplate(otp) {
   return `<!DOCTYPE html>
       <html lang="en">
       <head>
@@ -95,6 +90,6 @@ function getOtpEmailTamplate (otp) {
         
         </div>
       </body>
-      </html>`
+      </html>`;
 }
-module.exports = {sendEmail, getOtpEmailTamplate}
+module.exports = { sendEmail, getOtpEmailTamplate };
