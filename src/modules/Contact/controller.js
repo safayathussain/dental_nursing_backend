@@ -139,6 +139,6 @@ const sendMailContact = asyncHandler(async (req, res) => {
   sendResponse({ res, message: "Contact mail sent successfully" });
 });
 
-router.post("/send-mail", authMiddleware, sendMailContact);
+router.post("/send-mail",   sendMailContact);
 
 module.exports = router;
