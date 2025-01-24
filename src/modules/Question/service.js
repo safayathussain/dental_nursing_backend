@@ -2,6 +2,7 @@ const { default: mongoose } = require("mongoose");
 const { NotFound, BadRequest } = require("../../utility/errors");
 const QuestionModel = require("./model");
 const CategoryModel = require("../Category/model");
+const UserModel = require("../User/model");
 
 const createQuestion = async ({ content, title, userId, categories }) => {
   const question = await QuestionModel.create({
@@ -24,6 +25,7 @@ const deleteQuestion = async (id, userId) => {
     return { statusCode: 404, message: "Question not found", success: false };
   }
   const question = await QuestionModel.findById(id);
+  const user = await UserModel.findById(userId);
   if (!question) {
     return {
       statusCode: 404,
@@ -31,7 +33,7 @@ const deleteQuestion = async (id, userId) => {
       success: false,
     };
   }
-  if (userId !== question.userId.toString() && userId.role !== "AD") {
+  if (userId !== question.userId.toString() && user.role !== "AD") {
     return {
       statusCode: 403,
       message: "You can’t delete this question",
